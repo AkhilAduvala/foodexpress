@@ -1,4 +1,4 @@
-package com.foodelivery.customer_service.exception;
+package com.foodelivery.order_service.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(CustomerNotFoundException.class)
-    public ResponseEntity<String> HandleCustomerNotFoundException(CustomerNotFoundException ex){
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    @ExceptionHandler(ItemNotFoundException.class)
+    public ResponseEntity<String> handleItemNotFoundException(ItemNotFoundException ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

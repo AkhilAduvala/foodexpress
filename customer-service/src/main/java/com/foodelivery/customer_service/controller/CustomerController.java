@@ -25,7 +25,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{CId}")
-    public ResponseEntity<CustomerDto> getCustomer(int customerId){
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable("CId") int customerId){
         return customerService.getCustomer(customerId);
     }
 
@@ -40,7 +40,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{CId}")
-    public ResponseEntity<Void> deleteCustomer(int customerId){
+    public ResponseEntity<Void> deleteCustomer(@PathVariable("CId") int customerId){
         return customerService.deleteCustomer(customerId);
     }
 }

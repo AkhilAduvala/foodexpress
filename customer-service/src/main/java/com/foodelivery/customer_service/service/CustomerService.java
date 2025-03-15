@@ -6,7 +6,6 @@ import com.foodelivery.customer_service.model.Customer;
 import com.foodelivery.customer_service.repo.CustomerRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,17 +22,17 @@ public class CustomerService {
         this.customerRepo = customerRepo;
     }
 
-    @Cacheable(value = "allcustomers", key = "#customerId")
+    //@Cacheable(value = "allcustomers", key = "#customerId")
     public ResponseEntity<List<CustomerDto>> getAllCustomers(){
         List<CustomerDto> customersDto = new ArrayList<>();
         List<Customer> customers = customerRepo.findAll();
         for (Customer customer : customers){
             CustomerDto customerDto = new CustomerDto();
 
-            customerDto.setCustomerId(customer.getCustomer_Id());
-            customerDto.setCustomerName(customer.getCustomer_Name());
-            customerDto.setCustomerAddress(customer.getCustomer_Address());
-            customerDto.setCustomerContact(customer.getCustomer_Contact());
+            customerDto.setCustomerId(customer.getCustomerId());
+            customerDto.setCustomerName(customer.getCustomerName());
+            customerDto.setCustomerAddress(customer.getCustomerAddress());
+            customerDto.setCustomerContact(customer.getCustomerNumber());
 
             customersDto.add(customerDto);
         }
@@ -41,7 +40,7 @@ public class CustomerService {
         return new ResponseEntity<>(customersDto, HttpStatus.OK);
     }
 
-    @Cacheable(value = "customer", key = "#customerId")
+    //@Cacheable(value = "customer", key = "#customerId")
     public ResponseEntity<CustomerDto> getCustomer(int customerId){
         CustomerDto customerDto = new CustomerDto();
 
@@ -49,10 +48,10 @@ public class CustomerService {
                 .orElseThrow(() -> new CustomerNotFoundException("Unable to find the customer with Id : "
                         + customerId));
 
-        customerDto.setCustomerId(customer.getCustomer_Id());
-        customerDto.setCustomerName(customer.getCustomer_Name());
-        customerDto.setCustomerAddress(customer.getCustomer_Address());
-        customerDto.setCustomerContact(customer.getCustomer_Contact());
+        customerDto.setCustomerId(customer.getCustomerId());
+        customerDto.setCustomerName(customer.getCustomerName());
+        customerDto.setCustomerAddress(customer.getCustomerAddress());
+        customerDto.setCustomerContact(customer.getCustomerNumber());
 
         return new ResponseEntity<>(customerDto, HttpStatus.OK);
     }
@@ -60,26 +59,27 @@ public class CustomerService {
     public ResponseEntity<CustomerDto> newCustomer(CustomerDto customerDto){
         Customer customer = new Customer();
 
-        customer.setCustomer_Id(customerDto.getCustomerId());
-        customer.setCustomer_Name(customerDto.getCustomerName());
-        customer.setCustomer_Address(customerDto.getCustomerAddress());
-        customer.setCustomer_Contact(customerDto.getCustomerContact());
+        customer.setCustomerName(customerDto.getCustomerName());
+        customer.setCustomerAddress(customerDto.getCustomerAddress());
+        customer.setCustomerNumber(customerDto.getCustomerContact());
 
-        customerRepo.save(customer);
+        Customer registeredCustomer = customerRepo.save(customer);
+
+        customerDto.setCustomerId(registeredCustomer.getCustomerId());
 
         return new ResponseEntity<>(customerDto, HttpStatus.CREATED);
     }
 
-    @CachePut(value = "allcustomers", key = "#customerId")
+    //@CachePut(value = "allcustomers", key = "#customerId")
     public ResponseEntity<CustomerDto> updateCustomer(CustomerDto  customerDto){
         Customer customer = new Customer();
 
-        customer.setCustomer_Id(customerDto.getCustomerId());
-        customer.setCustomer_Name(customerDto.getCustomerName());
-        customer.setCustomer_Address(customerDto.getCustomerAddress());
-        customer.setCustomer_Contact(customerDto.getCustomerContact());
+        customer.setCustomerId(customerDto.getCustomerId());
+        customer.setCustomerName(customerDto.getCustomerName());
+        customer.setCustomerAddress(customerDto.getCustomerAddress());
+        customer.setCustomerNumber(customerDto.getCustomerContact());
 
-        Customer customerDetails = customerRepo.findById(customer.getCustomer_Id())
+        Customer customerDetails = customerRepo.findById(customer.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException("Unable to find the customer with Id : "
                         + customerDto.getCustomerId()));
 
@@ -87,13 +87,13 @@ public class CustomerService {
         return new ResponseEntity<CustomerDto>(customerDto, HttpStatus.OK);
     }
 
-    @CacheEvict(value = "allcustomers", key = "#customerId")
+    //@CacheEvict(value = "allcustomers", key = "#customerId")
     public ResponseEntity<Void> deleteCustomer(int customerId){
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException("Unable to find the customer with Id : "
                         + customerId));
 
-        customerRepo.deleteById(customer.getCustomer_Id());
+        customerRepo.deleteById(customer.getCustomerId());
         return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 
     }

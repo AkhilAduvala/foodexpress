@@ -6,6 +6,7 @@ import com.foodelivery.customer_service.model.Customer;
 import com.foodelivery.customer_service.repo.CustomerRepo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,6 @@ public class CustomerService {
         this.customerRepo = customerRepo;
     }
 
-    //@Cacheable(value = "allcustomers", key = "#customerId")
     public ResponseEntity<List<CustomerDto>> getAllCustomers(){
         List<CustomerDto> customersDto = new ArrayList<>();
         List<Customer> customers = customerRepo.findAll();
@@ -40,8 +40,9 @@ public class CustomerService {
         return new ResponseEntity<>(customersDto, HttpStatus.OK);
     }
 
-    //@Cacheable(value = "customer", key = "#customerId")
+    @Cacheable(value = "customers", key = "#customerId")
     public ResponseEntity<CustomerDto> getCustomer(int customerId){
+        System.out.println("from db");
         CustomerDto customerDto = new CustomerDto();
 
         Customer customer = customerRepo.findById(customerId)
@@ -70,7 +71,7 @@ public class CustomerService {
         return new ResponseEntity<>(customerDto, HttpStatus.CREATED);
     }
 
-    //@CachePut(value = "allcustomers", key = "#customerId")
+    @CachePut(value = "customers", key = "#customerDto.customerId")
     public ResponseEntity<CustomerDto> updateCustomer(CustomerDto  customerDto){
         Customer customer = new Customer();
 
@@ -87,7 +88,7 @@ public class CustomerService {
         return new ResponseEntity<CustomerDto>(customerDto, HttpStatus.OK);
     }
 
-    //@CacheEvict(value = "allcustomers", key = "#customerId")
+    @CacheEvict(value = "customers", key = "#customerId")
     public ResponseEntity<Void> deleteCustomer(int customerId){
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException("Unable to find the customer with Id : "

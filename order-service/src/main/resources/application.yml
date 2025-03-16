@@ -2,6 +2,17 @@ spring:
   application:
     name: Order Service  # Unique service name
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/foodexpress
+    username: foodexpress_user
+    password: foodexpress_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+
 server:
   port: 8082  # Order service will run on this port
 

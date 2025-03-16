@@ -2,6 +2,8 @@ package com.foodelivery.customer_service.controller;
 
 import com.foodelivery.customer_service.dto.CustomerDto;
 import com.foodelivery.customer_service.service.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,8 @@ import java.util.List;
 @RequestMapping("/customer")
 @RestController
 public class CustomerController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     private final CustomerService customerService;
 
